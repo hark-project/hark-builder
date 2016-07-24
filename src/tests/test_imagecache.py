@@ -29,4 +29,4 @@ class TestS3ImageCache(unittest.TestCase):
         ic = hark_builder.imagecache.S3ImageCache('foo', 'bar')
         body = MagicMock()
         ic.upload_image(image, body)
-        mockPutObject.assert_called_with(image.s3_path(), body, callback=None)
+        mockPutObject.assert_called_with(ic.prefixed_image_path(image), body, callback=None)

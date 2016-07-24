@@ -18,4 +18,5 @@ class S3ImageCache(hark_imagestore.imagecache.S3ImageCache):
 
     def upload_image(self, image, filename, callback=None):
         """Upload an image."""
-        self.bucket.put_object(image.s3_path(), filename, callback=callback)
+        path = self.prefixed_image_path(image)
+        self.bucket.put_object(path, filename, callback=callback)
