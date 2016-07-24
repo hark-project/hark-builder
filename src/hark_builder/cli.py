@@ -95,14 +95,19 @@ def run_build(
     click.secho('Build artifact:', fg='green')
     click.echo(json.dumps(stats, indent=4))
 
-    if not click.confirm('Ready to upload now?'):
+    if confirm_upload and not click.confirm('Ready to upload now?'):
         raise click.Abort
 
     click.secho('Uploading to %s' % runner.target_image.s3_path(), fg='blue')
 
     try:
         hark.log.debug('uploading artifact from image build: %s', build)
-        runner.upload_build_artifact()
+        length = runner.build_artifact_size()
+        msg = 'Uploading:'
+        with click.progressbar(length=length, label=msg) as bar:
+            def cb(count):
+                bar.update(count)
+            runner.upload_build_artifact(callback=cb)
     except UploadFailed as e:
         click.secho('Upload failed: %s' % e, fg='red')
         raise click.Aborted

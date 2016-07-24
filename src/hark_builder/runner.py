@@ -89,17 +89,21 @@ class BuildRunner(object):
         except NoArtifact:
             return False
 
+    def build_artifact_size(self):
+        st = os.stat(self.artifact_filename())
+        return st.st_size
+
     def build_artifact_info(self):
         """
         Return a dictionary with stats about the build artifact.
         """
         fname = self.artifact_filename()
-        st = os.stat(fname)
+        size = self.build_artifact_size()
         return {
             'filename': fname,
-            'size_mb': (st.st_size >> 20)
+            'size_mb': (size >> 20)
         }
 
-    def upload_build_artifact(self):
-        with open(self.artifact_filename(), 'rb') as f:
-            self.image_cache.upload_image(self.target_image, f)
+    def upload_build_artifact(self, callback=None):
+        self.image_cache.upload_image(
+            self.target_image, self.artifact_filename(), callback=callback)
