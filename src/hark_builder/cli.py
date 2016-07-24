@@ -46,10 +46,12 @@ def list_builds():
     '--version',
     prompt='What version of the image', type=int, required=True)
 @click.option(
-    '--override-local',
-    is_flag=True, default=False,
+    '--override-local', is_flag=True, default=False,
     help='Run the build even if the artifact already exists locally'
 )
+@click.option(
+    '--confirm-upload', is_flag=True, default=False,
+    help='Prompt for confirmation before uploading')
 @click.option(
     '--aws-access-key-id',
     envvar='AWS_ACCESS_KEY_ID', type=str, default=None)
@@ -58,7 +60,7 @@ def list_builds():
     envvar='AWS_SECRET_ACCESS_KEY', type=str, default=None)
 def run_build(
         ctx, name, version,
-        override_local,
+        override_local, confirm_upload,
         aws_access_key_id, aws_secret_access_key):
     """Run a machine build"""
     build = hark_builder.build.Build.by_name(name)
