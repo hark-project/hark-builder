@@ -1,4 +1,4 @@
-include hark_builder/packer/*
+recursive-include hark_builder/packer *.json *.sh *.cfg
 
 include requirements.txt
 include requirements-dev.txt
